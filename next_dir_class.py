@@ -25,38 +25,45 @@ Usage example:
 
 
 """
-import os, sys, time
-
 import itertools, random
-class nextDirClass():
+
+
+class nextDirClass:
     """Usage example:
 
-        nextDir = nextDirClass(dir_levels=4,random_start=True)
+    nextDir = nextDirClass(dir_levels=4,random_start=True)
 
-        while True:
+    while True:
 
-            print(nextDir.get_next())
-    
+        print(nextDir.get_next())
+
     """
-    def __init__(self,dir_levels:int=3,random_start=False):
+
+    def __init__(self, dir_levels: int = 3, random_start=False):
         self.sequence = ['1','2','3','4','5','6','7','8','9','0','A','B','C','D','E','F']
+
         self.level = [itertools.cycle(self.sequence) for _ in range(dir_levels)]
         if random_start:
-            self.next = [next(itertools.islice(self.level[_],random.randint(0,dir_levels),None)) for _ in range(dir_levels)]
+            self.next = [next(itertools.islice(self.level[_],random.randint(0,dir_levels), None)) for _ in range(dir_levels)]
         else:
-            self.next = ['1' for _ in range(dir_levels)]
+            self.next = ["1" for _ in range(dir_levels)]
+
     def get_next(self):
-        """ Returns the text for the next directory 
-        """
-        for indexUp, (_,_) in enumerate(zip(self.next, reversed(self.next))):
+        """Returns the text for the next directory"""
+        for indexUp, (_, _) in enumerate(zip(self.next, reversed(self.next))):
             indexDown = len(self.next) - indexUp - 1
-            if indexUp < len(self.next)-1:
-                self.next[indexUp] = next(self.level[indexUp]) if (len([item for item in self.next[-indexDown:] if item == "F"]) == indexDown) else self.next[indexUp]
+            if indexUp < len(self.next) - 1:
+                self.next[indexUp] = (next(self.level[indexUp])
+                            if (len([item for item in self.next[-indexDown:] if item == "F"]) == indexDown) 
+                            else self.next[indexUp])
             else:
                 self.next[indexUp] = next(self.level[indexUp])
         return f"/{'/'.join(map(str,self.next))}/"
 
-nextDir = nextDirClass(dir_levels=4,random_start=True)
-while True:
-    print(nextDir.get_next())
 
+if __name__ == "__main__":
+
+    nextDir = nextDirClass(dir_levels=4, random_start=True)
+
+    while True:
+        print(nextDir.get_next())
